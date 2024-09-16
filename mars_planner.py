@@ -43,6 +43,7 @@ class RoverState :
             self.loc == other.loc
             and self.sample_extracted == other.sample_extracted
             and self.holding_sample == other.holding_sample
+            and self.holding_tool == other.holding_tool
             and self.charged == other.charged
         )
 
@@ -74,7 +75,7 @@ class RoverState :
 def move_to_sample(state) :
     r2 = deepcopy(state)
     r2.loc = "sample"
-    r2.prev=state
+    r2.prev = state
     return r2
 def move_to_station(state) :
     r2 = deepcopy(state)
@@ -96,19 +97,17 @@ def pick_up_tool(state):
     return r2
 
 def use_tool(state):
-    # r2 = deepcopy(state)
-    # r2.holding_sample = True
-    # r2.rev = state
-    # return r2
-    return pick_up_sample(state)
+    r2 = deepcopy(state)
+    if state.loc == "sample":
+        r2.sample_extracted = True
+    r2.prev = state
+    return r2
 
 def drop_tool(state):
     r2 = deepcopy(state)
     r2.holding_tool = False
     r2.prev = state
     return r2
-
-# tools end here
 
 def pick_up_sample(state) :
     r2 = deepcopy(state)
@@ -141,27 +140,20 @@ def battery_goal(state) :
 ## add your goals here.
 
 def charged(state):
-    return state.charged == True
+    return state.charged
 
 def sample_extracted(state):
-    return state.sample_extracted == True
+    return state.sample_extracted
 
 def holding_tool(state):
-    return state.holding_tool == True
+    return state.holding_tool
 
 def mission_complete(state) :
-
-    print(state)
-
-    if battery_goal(state) and charged(state) and sample_extracted(state):
-        print("mission complete")
-    else:
-        print("mission incomplete")
-
     return (
         battery_goal(state)
         and charged(state)
         and sample_extracted(state)
+        and holding_tool(state)
     )
 
 
