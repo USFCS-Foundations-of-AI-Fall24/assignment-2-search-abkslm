@@ -30,14 +30,14 @@ class RoverState :
     ## you do this.
     def __eq__(self, other):
 
-        print(f"loc: {self.loc == other.loc}\n"
-              f"sample extracted: {self.sample_extracted == other.sample_extracted}\n"
-              f"holding sample: {self.holding_sample == other.holding_sample}\n"
-              f"charged: {self.charged == other.charged}\n"
-              f"combined: {self.loc == other.loc
-                           and self.sample_extracted == other.sample_extracted
-                           and self.holding_sample == other.holding_sample
-                           and self.charged == other.charged}\n")
+        # print(f"loc: {self.loc == other.loc}\n"
+        #       f"sample extracted: {self.sample_extracted == other.sample_extracted}\n"
+        #       f"holding sample: {self.holding_sample == other.holding_sample}\n"
+        #       f"charged: {self.charged == other.charged}\n"
+        #       f"combined: {self.loc == other.loc
+        #                    and self.sample_extracted == other.sample_extracted
+        #                    and self.holding_sample == other.holding_sample
+        #                    and self.charged == other.charged}\n")
 
         return (
             self.loc == other.loc
@@ -64,6 +64,9 @@ class RoverState :
         ## remove actions that have no effect
 
         succ = [item for item in succ if not item[0] == self]
+        for item in succ:
+            item[0].prev = self
+
         return succ
 
 ## our actions will be functions that return a new state.
@@ -91,7 +94,6 @@ def pick_up_tool(state):
     r2.holding_tool = True
     r2.prev = state
     return r2
-    # pass
 
 def use_tool(state):
     # r2 = deepcopy(state)
@@ -148,16 +150,19 @@ def holding_tool(state):
     return state.holding_tool == True
 
 def mission_complete(state) :
-    # return (
-    #     battery_goal(state)
-    #     and charged(state)
-    #     and sample_extracted(state)
-    # )
+
+    print(state)
+
     if battery_goal(state) and charged(state) and sample_extracted(state):
         print("mission complete")
-        return True
-    print("mission incomplete")
-    return False
+    else:
+        print("mission incomplete")
+
+    return (
+        battery_goal(state)
+        and charged(state)
+        and sample_extracted(state)
+    )
 
 
 if __name__=="__main__" :
