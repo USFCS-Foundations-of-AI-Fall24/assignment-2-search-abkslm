@@ -151,6 +151,13 @@ def holding_tool(state):
     return state.holding_tool
 
 def mission_complete(state) :
+
+    if  battery_goal(state) and charged(state) and sample_extracted(state) and holding_tool(state):
+        print(f"mission complete.\nstate:\n{state}\n")
+    else:
+        print(f"mission incomplete.\nstate:\n{state}\n")
+
+
     return (
         battery_goal(state)
         and charged(state)
