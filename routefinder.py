@@ -1,4 +1,5 @@
 from queue import PriorityQueue
+import Graph
 
 class map_state() :
     ## f = total estimated cost
@@ -46,8 +47,31 @@ def h1(state) :
 ## you do this - return the straight-line distance between the state and (1,1)
 def sld(state) :
     sqt(a^ + b2)
+    pass
 
 ## you implement this. Open the file filename, read in each line,
 ## construct a Graph object and assign it to self.mars_graph().
-def read_mars_graph(filename):
-    pass
+def read_mars_graph(filename, map_state):
+    graph = Graph.Graph()
+
+    with open(filename, 'r') as file:
+        for line in file:
+            key, values = line.strip().split(':')
+            key_tuple = tuple(map(int, key.split(',')))
+            value_list = [tuple(map(int, value.split(','))) for value in values.strip().split()]
+
+            graph.add_node(key_tuple)
+
+            for value in value_list:
+                edge = Graph.Edge(key_tuple, value)
+                graph.add_edge(edge)
+
+    map_state.mars_graph = graph
+    return graph
+
+
+
+if __name__ == "__main__":
+    test_map_state = map_state()
+    read_mars_graph("MarsMap.txt", test_map_state)
+    print(test_map_state.)
