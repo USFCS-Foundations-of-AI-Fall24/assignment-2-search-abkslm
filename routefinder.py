@@ -61,14 +61,12 @@ def read_mars_graph(filename, map_state):
             value_list = [tuple(map(int, value.split(','))) for value in values.strip().split()]
 
             graph.add_node(key_tuple)
-
             for value in value_list:
                 edge = Graph.Edge(key_tuple, value)
                 graph.add_edge(edge)
 
     map_state.mars_graph = graph
     return graph
-
 
 
 if __name__ == "__main__":
