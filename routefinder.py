@@ -1,5 +1,6 @@
 from queue import PriorityQueue
 import Graph
+from math import sqrt
 
 class map_state() :
     ## f = total estimated cost
@@ -45,9 +46,12 @@ def h1(state) :
     return 0
 
 ## you do this - return the straight-line distance between the state and (1,1)
-def sld(state) :
-    sqt(a^ + b2)
-    pass
+def sld(p1) :
+    # sqt(a^ + b2)
+    p2 = (1,1)
+    #assuming "state" (p1/p2) is a tuple, might need to adjust to use an x/y
+    return sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[2]) ** 2)
+    # pass
 
 ## you implement this. Open the file filename, read in each line,
 ## construct a Graph object and assign it to self.mars_graph().
