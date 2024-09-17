@@ -65,8 +65,6 @@ class RoverState :
         ## remove actions that have no effect
 
         succ = [item for item in succ if not item[0] == self]
-        for item in succ:
-            item[0].prev = self
 
         return succ
 
@@ -77,6 +75,7 @@ def move_to_sample(state) :
     r2.loc = "sample"
     r2.prev = state
     return r2
+
 def move_to_station(state) :
     r2 = deepcopy(state)
     r2.loc = "station"
@@ -113,21 +112,22 @@ def drop_tool(state):
 
 def pick_up_sample(state) :
     r2 = deepcopy(state)
-    if state.sample_extracted and state.loc == "sample":
+    if state.loc == "sample":
         r2.holding_sample = True
     r2.prev = state
     return r2
 
 def drop_sample(state) :
     r2 = deepcopy(state)
-    if state.sample_extracted and state.loc == "station":
+    if state.holding_sample and state.loc == "station":
         r2.holding_sample = False
+        r2.sample_extracted = True
     r2.prev = state
     return r2
 
 def charge(state) :
     r2 = deepcopy(state)
-    if state.sample_extracted and state.loc == "sample":
+    if state.sample_extracted and state.loc == "battery":
         r2.charged = True
     r2.prev = state
     return r2
@@ -141,29 +141,23 @@ def battery_goal(state) :
     return state.loc == "battery"
 ## add your goals here.
 
-def charged(state):
+def charged_goal(state):
     return state.charged
 
-def sample_extracted(state):
+def sample_extracted_goal(state):
     return state.sample_extracted
 
-def holding_tool(state):
-    return state.holding_tool
-
 def mission_complete(state) :
-
-    if  battery_goal(state) and charged(state) and sample_extracted(state) and holding_tool(state):
-        print(f"mission complete.\nstate:\n{state}\n")
-    else:
-        print(f"mission incomplete.\nstate:\n{state}\n")
-
-
     return (
         battery_goal(state)
-        and charged(state)
-        and sample_extracted(state)
-        and holding_tool(state)
+        and charged_goal(state)
+        and sample_extracted_goal(state)
     )
+    # return (
+    #     battery_goal(state),
+    #     charged_goal(state),
+    #     sample_extracted_goal(state)
+    # )
 
 
 if __name__=="__main__" :
