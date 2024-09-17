@@ -74,4 +74,4 @@ def read_mars_graph(filename, map_state):
 if __name__ == "__main__":
     test_map_state = map_state()
     read_mars_graph("MarsMap", test_map_state)
-    print(test_map_state.)
+    print(test_map_state)
