@@ -31,17 +31,20 @@ class map_state() :
         return self.f <= other.f
 
     def is_goal(self):
-        return self.location == '1,1'
+        return self.location == '8,8'
 
 
 def a_star(start_state, heuristic_fn, goal_test, use_closed_list=True) :
     search_queue = PriorityQueue()
     closed_list = set() if use_closed_list else None
     search_queue.put((start_state.f, start_state))
+    states_generated = 1
 
     while not search_queue.empty():
         current_f, current_state = search_queue.get()
-        
+
+        states_generated += 1
+
         if goal_test(current_state):
             path = []
             while current_state:
@@ -52,11 +55,16 @@ def a_star(start_state, heuristic_fn, goal_test, use_closed_list=True) :
         if use_closed_list:
             closed_list.add(current_state)
 
-        for edge in current_state.mars_graph.get_edges(current_state.location):
+        edges = current_state.mars_graph.get_edges(current_state.location)
+
+        for edge in edges or []:
             neighbor = edge.dest
 
             g_cost = current_state.g + edge.val
-            h_cost = heuristic_fn(neighbor)
+
+            temp_neighbor_state = map_state(location=neighbor)
+            h_cost = heuristic_fn(temp_neighbor_state)
+
             neighbor_state = map_state(
                 location=neighbor,
                 mars_graph=current_state.mars_graph,
@@ -70,6 +78,7 @@ def a_star(start_state, heuristic_fn, goal_test, use_closed_list=True) :
 
             search_queue.put((neighbor_state.f, neighbor_state))
 
+    print(f"Goal not found after generating {states_generated} states")
     return None
 
 
@@ -86,7 +95,6 @@ def sld(state) :
     else:
         current_position = tuple(map(int, state.location.split(',')))
 
-
     return sqrt((current_position[0] - goal_position[0]) ** 2 + (current_position[1] - goal_position[1]) ** 2)
 
 ## you implement this. Open the file filename, read in each line,
@@ -97,19 +105,22 @@ def read_mars_graph(filename, map_state):
     with open(filename, 'r') as file:
         for line in file:
             key, values = line.strip().split(':')
-            key_tuple = tuple(map(int, key.split(',')))
-            value_list = [tuple(map(int, value.split(','))) for value in values.strip().split()]
+            key_str = key.strip()
+            value_list = [value.strip() for value in values.split()]
 
-            graph.add_node(key_tuple)
+            graph.add_node(key_str)
             for value in value_list:
-                edge = Graph.Edge(key_tuple, value)
+                edge = Graph.Edge(key_str, value)
                 graph.add_edge(edge)
 
     map_state.mars_graph = graph
-    return graph
 
+
+def mission_complete(state):
+    return state.is_goal()
 
 if __name__ == "__main__":
-    test_map_state = map_state()
+    test_map_state = map_state(location="1,1")
     read_mars_graph("MarsMap", test_map_state)
-    print(test_map_state)
+
+    print(a_star(test_map_state, sld, mission_complete))
