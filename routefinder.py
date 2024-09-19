@@ -36,9 +36,41 @@ class map_state() :
 
 def a_star(start_state, heuristic_fn, goal_test, use_closed_list=True) :
     search_queue = PriorityQueue()
-    closed_list = {}
-    search_queue.put(start_state)
-    ## you do the rest.
+    closed_list = set() if use_closed_list else None
+    search_queue.put((start_state.f, start_state))
+
+    while not search_queue.empty():
+        current_f, current_state = search_queue.get()
+        
+        if goal_test(current_state):
+            path = []
+            while current_state:
+                path.append(current_state)
+                current_state = current_state.prev_state
+            return path[::-1]
+        
+        if use_closed_list:
+            closed_list.add(current_state)
+
+        for edge in current_state.mars_graph.get_edges(current_state.location):
+            neighbor = edge.dest
+
+            g_cost = current_state.g + edge.val
+            h_cost = heuristic_fn(neighbor)
+            neighbor_state = map_state(
+                location=neighbor,
+                mars_graph=current_state.mars_graph,
+                prev_state=current_state,
+                g=g_cost,
+                h=h_cost
+               )
+
+            if use_closed_list and neighbor_state in closed_list:
+                continue
+
+            search_queue.put((neighbor_state.f, neighbor_state))
+
+    return None
 
 
 ## default heuristic - we can use this to implement uniform cost search
@@ -46,12 +78,16 @@ def h1(state) :
     return 0
 
 ## you do this - return the straight-line distance between the state and (1,1)
-def sld(p1) :
-    # sqt(a^ + b2)
-    p2 = (1,1)
-    #assuming "state" (p1/p2) is a tuple, might need to adjust to use an x/y
-    return sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[2]) ** 2)
-    # pass
+def sld(state) :
+    goal_position = (1, 1)
+
+    if not state.location:
+        current_position = (0, 0)
+    else:
+        current_position = tuple(map(int, state.location.split(',')))
+
+
+    return sqrt((current_position[0] - goal_position[0]) ** 2 + (current_position[1] - goal_position[1]) ** 2)
 
 ## you implement this. Open the file filename, read in each line,
 ## construct a Graph object and assign it to self.mars_graph().
