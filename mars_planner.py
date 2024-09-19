@@ -14,7 +14,7 @@
 ## Charged can be True or False
 
 from copy import deepcopy
-from search_algorithms import breadth_first_search
+from search_algorithms import breadth_first_search, depth_first_search
 
 
 class RoverState :
@@ -39,7 +39,8 @@ class RoverState :
     def __repr__(self):
         return (f"Location: {self.loc}\n" +
                 f"Sample Extracted?: {self.sample_extracted}\n"+
-                f"Holding Sample?: {self.holding_sample}\n" +
+                f"Holding Sample?: {self.holding_sample}\n"
+                f"Holding Tool?: {self.holding_tool}\n" +
                 f"Charged? {self.charged}")
 
     def __hash__(self):
@@ -122,19 +123,32 @@ def charge(state) :
     return r2
 
 
-action_list = [charge, drop_sample, pick_up_sample,
-               move_to_sample, move_to_battery, move_to_station]
+action_list = [charge, drop_sample, move_to_sample, pick_up_sample,
+                move_to_battery, move_to_station]
 
 
 def battery_goal(state) :
     return state.loc == "battery"
-## add your goals here.
 
 def charged_goal(state):
     return state.charged
 
 def sample_extracted_goal(state):
     return state.sample_extracted
+
+
+### decomp goals
+
+def move_to_sample_goal(state):
+    return state.loc == "sample"
+
+def remove_sample_goal(state):
+    print(f"\n\nstate:{state}\n\n")
+    return state.holding_sample
+
+def return_to_charger_goal(state):
+    return battery_goal(state) and state.charged
+
 
 def mission_complete(state) :
     return (
@@ -145,8 +159,20 @@ def mission_complete(state) :
 
 if __name__=="__main__" :
     s = RoverState()
-    result = breadth_first_search(s, action_list, mission_complete)
-    print(result)
 
+    print("\nSolving move to sample...")
+    result = breadth_first_search(s, action_list, move_to_sample_goal)
+    print(f"Move to sample result:\n{result}")
+    s = result
+
+    print("\nSolving remove sample...")
+    result = breadth_first_search(s, action_list, remove_sample_goal)
+    print(f"Remove sample result:\n{result}")
+    s = result
+
+    print("\nSolving return to charger...")
+    result = breadth_first_search(s, action_list, return_to_charger_goal)
+
+    print(result)
 
 
