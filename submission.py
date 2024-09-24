@@ -20,12 +20,11 @@ if __name__ == '__main__':
     print_green("Finished \"demo_antennae_freqs()\"\n")
 
     print_green("\nRunning \"demo_mars_planner()\"")
-    demo_mars_planner(decomposed=False, search_func=depth_first_search, limit=0)
+    # You can change the parameters here, limit is ignored when using bfs
+    demo_mars_planner(decomposed=True, search_func=depth_first_search, limit=10)
     print_green("Finished \"demo_mars_planner()\"\n")
 
-    # print(f"\n\033[92mRunning \"demo_routefinder()\"\033[0m")
     print_green("\nRunning \"demo_routefinder()\"")
     demo_routefinder()
-    print_green("Finished \"demo_routefinder()\"")
+    print_green("Finished \"demo_routefinder()\"\n")
 
-# print("\033[92m" +"Finished \"demo_routefinder()\"\n")
