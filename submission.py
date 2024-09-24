@@ -21,12 +21,15 @@ if __name__ == '__main__':
     print_green("Finished \"demo_antennae_freqs()\"\n")
 
     print_green("\nRunning \"demo_mars_planner()\"")
-    # You can change the parameters here, limit is ignored when using bfs
+    ## You can play with the parameters here
+    # decomposed= True/False
+    # search_func= depth_first_search/breadth_first_search
+    # limit= dfs limit, ignored when bfs is used as search_func
     demo_mars_planner(decomposed=True, search_func=depth_first_search, limit=10)
     print_green("Finished \"demo_mars_planner()\"\n")
 
     print_green("\nRunning \"demo_routefinder()\"")
-    # You can change heuristic= to either `h1` or `sld`
+    ## You can change heuristic= to either `h1` or `sld`
     demo_routefinder(heuristic=sld)
     print_green("Finished \"demo_routefinder()\"\n")
 
