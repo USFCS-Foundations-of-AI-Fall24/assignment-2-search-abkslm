@@ -24,7 +24,7 @@ if __name__ == '__main__':
     ## You can play with the parameters here
     # decomposed= True/False
     # search_func= depth_first_search/breadth_first_search
-    # limit= dfs limit, ignored when bfs is used as search_func
+    # limit= dfs limit, ignored when bfs is used as search_func; default is 0 (unlimited)
     demo_mars_planner(decomposed=True, search_func=depth_first_search, limit=10)
     print_green("Finished \"demo_mars_planner()\"\n")
 
