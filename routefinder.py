@@ -120,11 +120,11 @@ def read_mars_graph(filename, map_state):
 def mission_complete(state):
     return state.is_goal()
 
-def main():
+def main(heuristic=sld):
     test_map_state = map_state(location="1,1")
     read_mars_graph("MarsMap", test_map_state)
 
-    return a_star(test_map_state, h1, mission_complete)
+    return a_star(test_map_state, heuristic, mission_complete)
 
 
 if __name__ == "__main__":

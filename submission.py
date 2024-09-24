@@ -1,5 +1,6 @@
-import antennae_freqs, mars_planner, routefinder, search_algorithms
+import antennae_freqs, mars_planner, routefinder
 from search_algorithms import depth_first_search, breadth_first_search
+from routefinder import sld, h1
 
 def print_green(print_str: str):
     print("\033[92m" + print_str + "\033[0m")
@@ -10,8 +11,8 @@ def demo_antennae_freqs():
 def demo_mars_planner(decomposed: bool, search_func=breadth_first_search, limit: int=0):
     print(mars_planner.main(decomposed, search_func, limit))
 
-def demo_routefinder():
-    print(routefinder.main())
+def demo_routefinder(heuristic=sld):
+    print(routefinder.main(heuristic=heuristic))
 
 if __name__ == '__main__':
 
@@ -25,6 +26,7 @@ if __name__ == '__main__':
     print_green("Finished \"demo_mars_planner()\"\n")
 
     print_green("\nRunning \"demo_routefinder()\"")
-    demo_routefinder()
+    # You can change heuristic= to either `h1` or `sld`
+    demo_routefinder(heuristic=sld)
     print_green("Finished \"demo_routefinder()\"\n")
 
