@@ -14,6 +14,7 @@
 ## Charged can be True or False
 
 from copy import deepcopy
+
 from search_algorithms import breadth_first_search, depth_first_search
 
 
@@ -149,6 +150,23 @@ def remove_sample_goal(state):
 def return_to_charger_goal(state):
     return battery_goal(state) and state.charged
 
+def solve_decomposed(state, search_func, limit=0):
+    print("\nSolving move to sample...")
+    result = search_func(state, action_list, move_to_sample_goal, limit=limit)
+    print(f"Move to sample result:\n{state}")
+    s = result
+
+    print("\nSolving remove sample...")
+    state = search_func(s, action_list, remove_sample_goal)
+    print(f"Remove sample result:\n{state}")
+    s = result
+
+    print("\nSolving return to charger...")
+    result = search_func(s, action_list, return_to_charger_goal, limit=limit)
+
+    return result
+
+
 
 def mission_complete(state) :
     return (
@@ -157,22 +175,17 @@ def mission_complete(state) :
         and sample_extracted_goal(state)
     )
 
-if __name__=="__main__" :
+
+def main(decomposed: bool = True, search_func=breadth_first_search, limit=0):
     s = RoverState()
+    if decomposed:
+        return solve_decomposed(state=s, search_func=search_func, limit=limit)
+    else:
+        return search_func(s, action_list, mission_complete, limit=limit)
 
-    print("\nSolving move to sample...")
-    result = breadth_first_search(s, action_list, move_to_sample_goal)
-    print(f"Move to sample result:\n{result}")
-    s = result
 
-    print("\nSolving remove sample...")
-    result = breadth_first_search(s, action_list, remove_sample_goal)
-    print(f"Remove sample result:\n{result}")
-    s = result
 
-    print("\nSolving return to charger...")
-    result = breadth_first_search(s, action_list, return_to_charger_goal)
-
-    print(result)
+if __name__=="__main__" :
+    print(main(decomposed=True, search_func=depth_first_search, limit=0))
 
 

@@ -50,6 +50,7 @@ def a_star(start_state, heuristic_fn, goal_test, use_closed_list=True) :
             while current_state:
                 path.append(current_state)
                 current_state = current_state.prev_state
+            print(f"A* generated {states_generated} states")
             return path[::-1]
         
         if use_closed_list:
@@ -59,10 +60,9 @@ def a_star(start_state, heuristic_fn, goal_test, use_closed_list=True) :
 
         for edge in edges or []:
             neighbor = edge.dest
+            temp_neighbor_state = map_state(location=neighbor)
 
             g_cost = current_state.g + edge.val
-
-            temp_neighbor_state = map_state(location=neighbor)
             h_cost = heuristic_fn(temp_neighbor_state)
 
             neighbor_state = map_state(
@@ -91,9 +91,10 @@ def sld(state) :
     goal_position = (1, 1)
 
     if not state.location:
-        current_position = (0, 0)
-    else:
-        current_position = tuple(map(int, state.location.split(',')))
+        print(f"No location for state: {state}")
+        return None
+
+    current_position = tuple(map(int, state.location.split(',')))
 
     return sqrt((current_position[0] - goal_position[0]) ** 2 + (current_position[1] - goal_position[1]) ** 2)
 
@@ -119,8 +120,12 @@ def read_mars_graph(filename, map_state):
 def mission_complete(state):
     return state.is_goal()
 
-if __name__ == "__main__":
+def main():
     test_map_state = map_state(location="1,1")
     read_mars_graph("MarsMap", test_map_state)
 
-    print(a_star(test_map_state, sld, mission_complete))
+    return a_star(test_map_state, h1, mission_complete)
+
+
+if __name__ == "__main__":
+    print(main())

@@ -2,7 +2,8 @@ from collections import deque
 
 
 ## We will append tuples (state, "action") in the search queue
-def breadth_first_search(startState, action_list, goal_test, use_closed_list=True) :
+## This contains a `limit` parameter to make it work happily when func is passed as a parameter
+def breadth_first_search(startState, action_list, goal_test, use_closed_list=True, limit=0) :
     search_queue = deque()
     closed_list = {}
 
@@ -57,13 +58,12 @@ def depth_first_search(startState, action_list, goal_test, use_closed_list=True,
 
         if goal_test(state):
             print("Goal found")
-            print(next_state)
             ptr = state
             while ptr is not None :
                 ptr = ptr.prev
                 print(ptr)
             print(f"\nStates generated: {states_generated}\n")
-            return next_state
+            return next_state[0]
         elif depth < limit or limit == 0:
             successors = state.successors(action_list)
             if use_closed_list :
